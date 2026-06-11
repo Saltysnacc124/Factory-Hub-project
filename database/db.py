@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "postgresql://postgres:password@localhost/factory_hub"
+DATABASE_URL = "postgresql://postgres:sanjay6978@localhost/factory_hub"
 
 engine = create_engine(DATABASE_URL)
 

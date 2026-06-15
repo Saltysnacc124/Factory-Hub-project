@@ -1,16 +1,5 @@
-from backend.schemas.machine_schema import MachineResponse
+from backend.repositories.machine_repository import get_all_machines as repo_get_all_machines
 
 
 def get_all_machines():
-    return [
-        MachineResponse(
-            id=1,
-            name="CNC01",
-            type="CNC"
-        ),
-        MachineResponse(
-            id=2,
-            name="PRESS01",
-            type="Press"
-        )
-    ]
+    return repo_get_all_machines()

@@ -7,9 +7,10 @@ app = FastAPI(
 
 app.include_router(router)
 
+
 @app.get("/")
 def root():
     return {
-        "message": "Factory Hub",
-        "machines_endpoint": "/machines/"
+        "message": "Factory Machine Data Hub",
+        "docs": "/docs"
     }

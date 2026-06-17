@@ -13,8 +13,15 @@ while True:
 
     tool_change = machine.generate_tool_change()
 
+    alarm = machine.generate_alarm()
+
     print("TELEMETRY:")
     print(json.dumps(telemetry, indent=2))
+
+    if alarm is not None:
+
+        print("\nALARM:")
+        print(json.dumps(alarm, indent=2))
 
     if cycle_event is not None:
 

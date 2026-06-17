@@ -55,6 +55,12 @@ class CNCMachine:
         self.feed_override = 100
         self.spindle_override = 100
 
+        self.alarm_active = False
+
+        self.alarm_code = None
+        self.alarm_message = None
+        self.alarm_severity = None
+
     
     def update(self):
 
@@ -114,8 +120,29 @@ class CNCMachine:
                     self.tool_offset = round(random.uniform(-0.02, 0.02), 3)
                     self.tool_wear = 0
 
-    # Cooling when idle
-        if self.status == "IDLE":
+        #Alarm - Spindle Temp High (actual threshold=80, testing=30)
+            if self.spindle_temp > 30 and not self.alarm_active:
+
+                self.alarm_active = True
+
+                self.alarm_code = "TEMP_HIGH"
+
+                self.alarm_message = "Spindle temperature exceeded threshold"
+
+                self.alarm_severity = "HIGH"
+
+                self.last_alarm = {
+                    "alarm_code": self.alarm_code,
+                    "message": self.alarm_message,
+                    "severity": self.alarm_severity
+                }
+
+                self.status = "ALARM"
+
+                self.cycle_active = False
+
+    # Cooling when idle/alarm
+        if self.status != "RUNNING":
 
             self.spindle_rpm = 0
             self.feed_rate = 0
@@ -230,5 +257,29 @@ class CNCMachine:
         }
 
         self.last_tool_change = None
+
+        return payload
+
+    
+    def generate_alarm(self):
+
+        if self.last_alarm is None:
+            return None
+
+        payload = {
+            "message_type": "alarm",
+
+            "machine_id": self.machine_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+
+            "alarm_code": self.alarm_code,
+            "message": self.alarm_message,
+            "severity": self.alarm_severity,
+
+            "status": self.status,
+            "active": self.alarm_active
+        }
+
+        self.last_alarm = None
 
         return payload

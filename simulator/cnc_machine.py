@@ -45,6 +45,16 @@ class CNCMachine:
         self.last_tool_change = None
         self.last_alarm = None
 
+        self.tool_offset = 0.0
+        self.tool_wear = 0.0
+        self.tool_change_interval = 10
+
+        self.previous_tool_id = None
+        self.last_tool_change = None
+
+        self.feed_override = 100
+        self.spindle_override = 100
+
     
     def update(self):
 
@@ -78,6 +88,8 @@ class CNCMachine:
             self.spindle_temp += 0.1
             self.motor_temp += 0.05
 
+            self.tool_wear += 0.01
+
             if self.current_cycle_time >= self.cycle_time:
                 
                 self.part_count += 1
@@ -86,6 +98,21 @@ class CNCMachine:
 
                 self.last_cycle_event = "CYCLE_COMPLETED"
                 self.current_cycle_id += 1
+
+            #Tool Change
+                if self.part_count % self.tool_change_interval == 0:
+
+                    self.previous_tool_id = self.tool_id
+                    
+                    self.tool_id += 1
+
+                    self.last_tool_change = {
+                        "previous_tool_id": self.previous_tool_id,
+                        "new_tool_id": self.tool_id
+                    }
+
+                    self.tool_offset = round(random.uniform(-0.02, 0.02), 3)
+                    self.tool_wear = 0
 
     # Cooling when idle
         if self.status == "IDLE":
@@ -114,34 +141,39 @@ class CNCMachine:
 
         "program_id": self.program_id,
         "tool_id": self.tool_id,
+        "cycle_id": f"C{self.current_cycle_id:05d}",
 
         "cycle_active": self.cycle_active,
+        "current_cycle_time": self.current_cycle_time,
+        "cycle_time_target": self.cycle_time,
         "part_count": self.part_count,
 
-        "spindle_rpm": self.spindle_rpm,
-        "feed_rate": self.feed_rate,
+        "spindle_rpm": round(self.spindle_rpm, 2),
+        "feed_rate": round(self.feed_rate, 2),
 
         "axis_position": {
-            "x": self.x,
-            "y": self.y,
-            "z": self.z
+            "x": round(self.x, 2),
+            "y": round(self.y, 2),
+            "z": round(self.z, 2)
         },
 
         "load": {
-            "spindle": self.spindle_load,
-            "x_axis": self.x_axis_load,
-            "y_axis": self.y_axis_load,
-            "z_axis": self.z_axis_load
+            "spindle": round(self.spindle_load, 2),
+            "x_axis": round(self.x_axis_load, 2),
+            "y_axis": round(self.y_axis_load, 2),
+            "z_axis": round(self.z_axis_load, 2)
         },
 
         "temperature": {
-            "spindle": self.spindle_temp,
-            "motor": self.motor_temp
+            "spindle": round(self.spindle_temp, 2),
+            "motor": round(self.motor_temp, 2)
         },
 
+        "tool_wear": self.tool_wear,
+
         "override": {
-            "feed_override": 100,
-            "spindle_override": 100
+            "feed_override": self.feed_override,
+            "spindle_override": self.spindle_override
         }
     }
 
@@ -173,5 +205,30 @@ class CNCMachine:
         }
 
         self.last_cycle_event = None
+
+        return payload
+
+    
+    def generate_tool_change(self):
+
+        if self.last_tool_change is None:
+            return None
+            
+        payload = {
+            "message_type": "tool_change",
+
+            "machine_id": self.machine_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+
+            "tool_id": self.tool_id,
+            "previous_tool_id": self.previous_tool_id,
+
+            "tool_offset": self.tool_offset,
+            "tool_wear": round(self.tool_wear, 2),
+
+            "reason": "TOOL_LIFE_EXPIRED"
+        }
+
+        self.last_tool_change = None
 
         return payload

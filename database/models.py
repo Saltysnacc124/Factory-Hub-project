@@ -30,8 +30,9 @@ class MachineEvent(Base):
 
     tool_id = Column(Integer)
     tool_wear = Column(Float)
+    current_cycle_time = Column(Float)
 
-    cycle_time = Column(Float)
+    cycle_duration = Column(Float)
     production_count = Column(Integer)
 
     alarm_code = Column(String(50))

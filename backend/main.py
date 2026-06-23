@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+
 from backend.api.routes.machines import router
+from mqtt.subscriber import start_subscriber
 
 app = FastAPI(
     title="Factory Machine Data Hub"
@@ -8,6 +10,11 @@ app = FastAPI(
 app.include_router(router)
 
 
+@app.on_event("startup")
+def startup_event():
+    start_subscriber()
+
+    
 @app.get("/")
 def root():
     return {

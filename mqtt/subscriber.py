@@ -1,7 +1,7 @@
 import json
 import paho.mqtt.client as mqtt
 
-from handlers import (
+from mqtt.handlers import (
     handle_telemetry,
     handle_alarm,
     handle_tool_change,
@@ -50,11 +50,14 @@ def on_message(client, userdata, msg):
         print(f"Unknown message type: {message_type}")
 
 
-client = mqtt.Client()
+def start_subscriber():
+    client = mqtt.Client()
 
-client.on_connect = on_connect
-client.on_message = on_message
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-client.connect(BROKER, PORT)
+    client.connect(BROKER, PORT)
 
-client.loop_forever()
+    client.loop_start()
+
+    print("MQTT subscriber started")

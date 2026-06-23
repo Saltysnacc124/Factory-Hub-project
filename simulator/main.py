@@ -1,9 +1,19 @@
 import json
 import time
+import paho.mqtt.client as mqtt
 
 from cnc_machine import CNCMachine
 
 machine = CNCMachine()
+
+client = mqtt.Client()
+
+client.connect(
+    host="localhost",
+    port=1883
+)
+
+client.loop_start()
 
 while True:
 
@@ -15,25 +25,35 @@ while True:
 
     alarm = machine.generate_alarm()
 
-    print("TELEMETRY:")
-    print(json.dumps(telemetry, indent=2))
+    client.publish(
+        topic=f"cnc/{machine.machine_id}/telemetry",
+        payload=json.dumps(telemetry)
+    )
+    print("Published telemetry")
 
     if alarm is not None:
 
-        print("\nALARM:")
-        print(json.dumps(alarm, indent=2))
+        client.publish(
+            topic=f"cnc/{machine.machine_id}/alarm",
+            payload=json.dumps(alarm)
+        )
+        print("Published alarm")
 
     if cycle_event is not None:
 
-        print("\nCYCLE EVENT:")
-        print(json.dumps(cycle_event, indent=2))
+        client.publish(
+            topic=f"cnc/{machine.machine_id}/cycle_event",
+            payload=json.dumps(cycle_event)
+        )
+        print("Published cycle event")
 
     if tool_change is not None:
 
-        print("\nTOOL CHANGE:")
-        print(json.dumps(tool_change, indent=2))
-
-    print("-" * 50)
+        client.publish(
+            topic=f"cnc/{machine.machine_id}/tool_change",
+            payload=json.dumps(tool_change)
+        )
+        print("Published tool change")
 
     machine.update()
 

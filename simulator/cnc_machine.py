@@ -47,7 +47,7 @@ class CNCMachine:
 
         self.tool_offset = 0.0
         self.tool_wear = 0.0
-        self.tool_change_interval = 10
+        self.tool_change_interval = 2   #Actual=10; Test=2
 
         self.previous_tool_id = None
         self.last_tool_change = None
@@ -120,8 +120,8 @@ class CNCMachine:
                     self.tool_offset = round(random.uniform(-0.02, 0.02), 3)
                     self.tool_wear = 0
 
-        #Alarm - Spindle Temp High (actual threshold=80, testing=30)
-            if self.spindle_temp > 30 and not self.alarm_active:
+        #Alarm - Spindle Temp High (actual threshold=80, testing=40)
+            if self.spindle_temp > 40 and not self.alarm_active:
 
                 self.alarm_active = True
 
@@ -196,7 +196,7 @@ class CNCMachine:
             "motor": round(self.motor_temp, 2)
         },
 
-        "tool_wear": self.tool_wear,
+        "tool_wear": round(self.tool_wear, 2),
 
         "override": {
             "feed_override": self.feed_override,

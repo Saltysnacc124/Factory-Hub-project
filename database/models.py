@@ -19,7 +19,25 @@ class MachineEvent(Base):
     machine_name = Column(String(50))
     status = Column(String(20))
 
-    temperature = Column(Float)
+    spindle_rpm = Column(Float)
+    feed_rate = Column(Float)
+    spindle_load = Column(Float)
+    spindle_temp = Column(Float)
+
+    x_position = Column(Float)
+    y_position = Column(Float)
+    z_position = Column(Float)
+
+    tool_id = Column(Integer)
+    tool_wear = Column(Float)
+
+    cycle_time = Column(Float)
     production_count = Column(Integer)
+
+    alarm_code = Column(String(50))
+    alarm_severity = Column(String(20))
+    alarm_message = Column(String(255))
+
+    event_type = Column(String(50))
 
     timestamp = Column(DateTime, default=datetime.utcnow)

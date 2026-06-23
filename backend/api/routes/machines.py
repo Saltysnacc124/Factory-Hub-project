@@ -3,7 +3,10 @@ from typing import List
 from fastapi import APIRouter
 
 from backend.schemas.machine_schema import MachineResponse
-from backend.services.machine_service import get_all_machines
+from backend.services.machine_service import (
+    get_all_machines,
+    get_machine_by_id
+)
 
 router = APIRouter(
     prefix="/machines",
@@ -14,3 +17,10 @@ router = APIRouter(
 @router.get("/", response_model=List[MachineResponse])
 def get_machines():
     return get_all_machines()
+
+@router.get("/{machine_id}", response_model=MachineResponse)
+def get_machine(machine_id: str):
+
+    machine =  get_machine_by_id(machine_id)
+
+    return machine

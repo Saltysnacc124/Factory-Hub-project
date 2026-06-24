@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from backend.schemas.machine_schema import MachineResponse
 from backend.services.machine_service import (
@@ -22,5 +22,11 @@ def get_machines():
 def get_machine(machine_id: str):
 
     machine =  get_machine_by_id(machine_id)
+
+    if machine is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = f"Machine {machine_id} not found"
+        )
 
     return machine

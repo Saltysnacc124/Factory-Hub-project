@@ -53,7 +53,11 @@ class Telemetry(Base):
 
     machine_id = Column(
         Integer,
-        ForeignKey("machines.id"),
+        machine_id = Column(
+    String,
+    ForeignKey("machines.machine_id"),
+    nullable=False
+),
         nullable=False
     )
 

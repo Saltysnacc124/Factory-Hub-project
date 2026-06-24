@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "..."
+DATABASE_URL = "postgresql://postgres:sanjay6978@localhost/factory_db"
 
 engine = create_engine(DATABASE_URL)
 
@@ -10,6 +10,8 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine
 )
+
+Base = declarative_base()
 
 
 def get_db():

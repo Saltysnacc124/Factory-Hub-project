@@ -52,8 +52,6 @@ class Telemetry(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     machine_id = Column(
-        Integer,
-        machine_id = Column(
     String,
     ForeignKey("machines.machine_id"),
     nullable=False

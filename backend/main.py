@@ -21,3 +21,10 @@ def root():
         "message": "Factory Machine Data Hub",
         "docs": "/docs"
     }
+
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy"
+    }

@@ -40,6 +40,7 @@ class CNCMachine:
         self.current_cycle_time = 0
 
         self.current_cycle_id = 1
+        self.last_completed_cycle_id = None
 
         self.last_cycle_event = None
         self.last_tool_change = None
@@ -103,6 +104,7 @@ class CNCMachine:
                 self.cycle_active = False
 
                 self.last_cycle_event = "CYCLE_COMPLETED"
+                self.last_completed_cycle_id = self.current_cycle_id
                 self.current_cycle_id += 1
 
             #Tool Change
@@ -210,6 +212,11 @@ class CNCMachine:
         if self.last_cycle_event is None:
             return None
 
+        if self.last_cycle_event == "CYCLE_COMPLETED":
+            cycle_id = f"C{self.last_completed_cycle_id:05d}"
+        else:
+            cycle_id = f"C{self.current_cycle_id:05d}"
+
         payload = {
 
             "message_type": "cycle_event",
@@ -220,7 +227,7 @@ class CNCMachine:
 
             "event": self.last_cycle_event,
 
-            "cycle_id": f"C{self.current_cycle_id:05d}",
+            "cycle_id": cycle_id,
 
             "program_id": self.program_id,
 

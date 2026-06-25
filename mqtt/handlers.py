@@ -1,3 +1,17 @@
+from backend.schemas.machine_schema import (
+    Telemetry,
+    Alarm,
+    ToolChange,
+    CycleEvent
+)
+
+from backend.services.ingestion_service import (
+    process_telemetry,
+    process_alarm,
+    process_tool_change,
+    process_cycle_event
+)
+
 from mqtt.machine_state import (
     update_machine_state,
     update_alarm,
@@ -9,16 +23,21 @@ from mqtt.machine_state import (
 def handle_telemetry(data):
     
     machine_id = data["machine_id"]
-    time_data = data["timestamp"]
+    timestamp = data["timestamp"]
 
-    state_data = data.copy()
+    payload = data.copy()
 
-    state_data.pop("message_type", None)
-    state_data.pop("machine_id", None)
-    state_data.pop("timestamp", None)
+    payload.pop("message_type", None)
+    payload.pop("machine_id", None)
+    payload.pop("timestamp", None)
 
-    update_machine_state(machine_id, state_data)
-    update_time(machine_id, time_data)
+    telemetry = Telemetry(**payload)
+
+    process_telemetry(
+        machine_id,
+        timestamp,
+        telemetry
+    )
     
     print("\n[TELEMETRY]")
     print(data)
@@ -26,16 +45,21 @@ def handle_telemetry(data):
 def handle_alarm(data):
 
     machine_id = data["machine_id"]
-    time_data = data["timestamp"]
+    timestamp = data["timestamp"]
 
-    state_data = data.copy()
+    payload = data.copy()
 
-    state_data.pop("message_type", None)
-    state_data.pop("machine_id", None)
-    state_data.pop("timestamp", None)
+    payload.pop("message_type", None)
+    payload.pop("machine_id", None)
+    payload.pop("timestamp", None)
 
-    update_alarm(machine_id, state_data)
-    update_time(machine_id, time_data)
+    alarm = Alarm(**payload)
+
+    process_alarm(
+        machine_id,
+        timestamp,
+        alarm
+    )
        
     print("\n[ALARM]")
     print(data)
@@ -43,16 +67,21 @@ def handle_alarm(data):
 def handle_cycle_event(data):
 
     machine_id = data["machine_id"]
-    time_data = data["timestamp"]
+    timestamp = data["timestamp"]
 
-    state_data = data.copy()
+    payload = data.copy()
 
-    state_data.pop("message_type", None)
-    state_data.pop("machine_id", None)
-    state_data.pop("timestamp", None)
+    payload.pop("message_type", None)
+    payload.pop("machine_id", None)
+    payload.pop("timestamp", None)
 
-    update_cycle_event(machine_id, state_data)
-    update_time(machine_id, time_data)
+    cycle_event = CycleEvent(**payload)
+
+    process_cycle_event(
+        machine_id,
+        timestamp,
+        cycle_event
+    )
 
     print("\n[CYCLE EVENT]")
     print(data)
@@ -60,16 +89,21 @@ def handle_cycle_event(data):
 def handle_tool_change(data):
 
     machine_id = data["machine_id"]
-    time_data = data["timestamp"]
+    timestamp = data["timestamp"]
 
-    state_data = data.copy()
+    payload = data.copy()
 
-    state_data.pop("message_type", None)
-    state_data.pop("machine_id", None)
-    state_data.pop("timestamp", None)
+    payload.pop("message_type", None)
+    payload.pop("machine_id", None)
+    payload.pop("timestamp", None)
 
-    update_tool(machine_id, state_data)
-    update_time(machine_id, time_data)
+    tool_change = ToolChange(**payload)
+
+    process_tool_change(
+        machine_id,
+        timestamp,
+        tool_change
+    )
 
     print("\n[TOOL CHANGE]")
     print(data)

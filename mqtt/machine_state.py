@@ -29,9 +29,9 @@ def update_cycle_event(machine_id, event_data):
     machine_states[machine_id]["last_cycle_event"] = event_data
 
 
-def update_tool(machine_id, tool_id):
+def update_tool(machine_id, tool_data):
     initialize_machine(machine_id)
-    machine_states[machine_id]["current_tool"] = tool_id
+    machine_states[machine_id]["current_tool"] = tool_data
 
 
 def update_time(machine_id, time_data):

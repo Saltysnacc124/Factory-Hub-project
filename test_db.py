@@ -43,7 +43,7 @@ try:
         state="AUTOMATIC",
 
         program_id="P1001",
-        tool_id="T05",
+        tool_id=5,
         cycle_id="CYCLE_001",
 
         cycle_active=True,
@@ -100,8 +100,8 @@ try:
         machine_id="TEST_001",
 
         timestamp=datetime.now(),
-        tool_id="T08",
-        previous_tool_id="T05",
+        tool_id=8,
+        previous_tool_id=5,
         tool_offset=0.15,
         tool_wear=18.5,
         reason="Automatic Tool Change",
@@ -120,9 +120,9 @@ try:
         event="CYCLE_COMPLETE",
         cycle_id="CYCLE_001",
         program_id="P1001",
-        tool_id="T08",
+        tool_id=8,
         cycle_time_sec=24.8,
-        part_number="PART_125",
+        part_number=125,
     )
 
     print("✅ Cycle Event inserted")

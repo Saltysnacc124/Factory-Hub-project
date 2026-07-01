@@ -12,14 +12,6 @@ from backend.services.ingestion_service import (
     process_cycle_event
 )
 
-from mqtt.machine_state import (
-    update_machine_state,
-    update_alarm,
-    update_tool,
-    update_cycle_event,
-    update_time
-)
-
 def handle_telemetry(data):
     
     machine_id = data["machine_id"]

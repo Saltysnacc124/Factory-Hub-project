@@ -25,5 +25,14 @@ htmlcov/
 *.db
 *.sqlite3
 
+# Python packaging
+*.egg-info/
+build/
+dist/
+
+# Editor temp files
+*.swp
+*.swo
+
 # OS files
 .DS_Store

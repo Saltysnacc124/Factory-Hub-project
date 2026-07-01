@@ -1,3 +1,5 @@
+from backend.repositories.machine_repository import save_telemetry
+
 from backend.schemas.machine_schema import (
     Telemetry,
     Alarm,
@@ -23,6 +25,12 @@ def process_telemetry(machine_id: str, timestamp: str, data: Telemetry):
     update_time(
         machine_id,
         timestamp
+    )
+
+    save_telemetry(
+        machine_id,
+        timestamp,
+        data
     )
 
     print(

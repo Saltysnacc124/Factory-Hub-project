@@ -1,4 +1,9 @@
-from backend.repositories.machine_repository import save_telemetry
+from backend.repositories.machine_repository import (
+    save_telemetry,
+    save_alarm,
+    save_tool_change,
+    save_cycle_event
+)
 
 from backend.schemas.machine_schema import (
     Telemetry,
@@ -55,6 +60,12 @@ def process_alarm(machine_id: str, timestamp: str, data: Alarm):
         timestamp
     )
 
+    save_alarm(
+        machine_id,
+        timestamp,
+        data
+    )
+
     print(
         f"\n[PROCESS] Alarm | "
         f"Code = {data.alarm_code} "
@@ -76,6 +87,12 @@ def process_tool_change(machine_id: str, timestamp: str, data: ToolChange):
         timestamp
     )
 
+    save_tool_change(
+        machine_id,
+        timestamp,
+        data
+    )
+
     print(
         f"\n[PROCESS] Tool Change | "
         f"{data.previous_tool_id} -> {data.tool_id}"
@@ -94,6 +111,12 @@ def process_cycle_event(machine_id: str, timestamp: str, data: CycleEvent):
     update_time(
         machine_id,
         timestamp
+    )
+
+    save_cycle_event(
+        machine_id,
+        timestamp,
+        data
     )
     
     print(

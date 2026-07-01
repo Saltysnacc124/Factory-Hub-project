@@ -2,7 +2,10 @@ from mqtt.machine_state import machine_states
 
 from backend.schemas.machine_schema import (
     MachineResponse,
-    Telemetry
+    Telemetry,
+    Alarm,
+    ToolChange,
+    CycleEvent
 )
 
 from database.db import SessionLocal
@@ -141,6 +144,100 @@ def save_telemetry( machine_id: str, timestamp: str, telemetry: Telemetry):
         crud.insert_telemetry(
             db,
             **telemetry_data
+        )
+
+    except Exception:
+        db.rollback()
+        raise
+
+    finally:
+        db.close()
+
+
+def save_alarm( machine_id: str, timestamp: str, alarm: Alarm):
+    
+    db = SessionLocal()
+
+    try:
+        parsed_timestamp = datetime.fromisoformat(timestamp)
+
+        alarm_data = {
+            "machine_id": machine_id,
+            "timestamp": parsed_timestamp,
+
+            "alarm_code": alarm.alarm_code,
+            "message": alarm.message,
+            "severity": alarm.severity,
+            "status": alarm.status,
+            "active": alarm.active
+        }
+
+        crud.insert_alarm(
+            db,
+            **alarm_data
+        )
+
+    except Exception:
+        db.rollback()
+        raise
+
+    finally:
+        db.close()
+
+
+def save_tool_change( machine_id: str, timestamp: str, tool_change: ToolChange):
+    
+    db = SessionLocal()
+
+    try:
+        parsed_timestamp = datetime.fromisoformat(timestamp)
+
+        tool_change_data = {
+            "machine_id": machine_id,
+            "timestamp": parsed_timestamp,
+
+            "tool_id": tool_change.tool_id,
+            "previous_tool_id": tool_change.previous_tool_id,
+            "tool_offset": tool_change.tool_offset,
+            "tool_wear": tool_change.tool_wear,
+            "reason": tool_change.reason
+        }
+
+        crud.insert_tool_change(
+            db,
+            **tool_change_data
+        )
+
+    except Exception:
+        db.rollback()
+        raise
+
+    finally:
+        db.close()
+
+
+def save_cycle_event( machine_id: str, timestamp: str, cycle_event: CycleEvent):
+    
+    db = SessionLocal()
+
+    try:
+        parsed_timestamp = datetime.fromisoformat(timestamp)
+
+        cycle_event_data = {
+            "machine_id": machine_id,
+            "timestamp": parsed_timestamp,
+
+            "event": cycle_event.event,
+            "cycle_id": cycle_event.cycle_id,
+            "program_id": cycle_event.program_id,
+            "tool_id": cycle_event.tool_id,
+            "cycle_time_sec": cycle_event.cycle_time_sec,
+            "part_number": cycle_event.part_number
+        }
+
+        crud.insert_cycle_event(
+            db,
+            **cycle_event_data
         )
 
     except Exception:

@@ -5,9 +5,19 @@ from backend.repositories.machine_repository import (
     get_machine_alarm as repo_get_machine_alarm,
     get_machine_tool as repo_get_machine_tool,
     get_machine_cycle_event as repo_get_machine_cycle_event,
-    machine_exists as repo_machine_exists
+    machine_exists as repo_machine_exists,
+    get_machine_history as repo_get_machine_history
+    
 )
 
+def get_machine_history(
+    machine_id: str,
+    limit: int = 100
+):
+    return repo_get_machine_history(
+        machine_id,
+        limit
+    )
 
 def get_all_machines():
     return repo_get_all_machines()

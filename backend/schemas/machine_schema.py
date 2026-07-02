@@ -109,3 +109,15 @@ class MachineResponse(BaseModel):
     last_cycle_event: Optional[CycleEvent] = None
 
     last_update: Optional[str] = None
+
+
+from datetime import datetime
+
+
+class TelemetryHistoryPoint(BaseModel):
+    timestamp: datetime
+    spindle_temp: float
+    motor_temp: float
+    spindle_rpm: float
+    feed_rate: float
+    tool_wear: float   

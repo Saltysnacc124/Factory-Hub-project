@@ -84,6 +84,19 @@ def get_latest_telemetry(db: Session, machine_id: str):
         .first()
     )
 
+def get_telemetry_history(
+    db: Session,
+    machine_id: str,
+    limit: int = 100
+):
+    return (
+        db.query(Telemetry)
+        .filter(Telemetry.machine_id == machine_id)
+        .order_by(Telemetry.timestamp.desc())
+        .limit(limit)
+        .all()
+    )
+
 
 def delete_telemetry(db: Session, telemetry_id: int):
     telemetry = (

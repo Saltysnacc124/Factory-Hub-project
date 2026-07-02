@@ -2,7 +2,10 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 
-from backend.schemas.machine_schema import MachineResponse
+from backend.schemas.machine_schema import (
+    MachineResponse,
+    TelemetryHistoryPoint,
+)
 from backend.services.machine_service import (
     get_all_machines,
     get_machine_by_id,
@@ -10,6 +13,7 @@ from backend.services.machine_service import (
     get_machine_alarm,
     get_machine_tool,
     get_machine_cycle_event,
+    get_machine_history,
     machine_exists
 )
 
@@ -83,3 +87,20 @@ def get_cycle(machine_id: str):
         )
 
     return get_machine_cycle_event(machine_id)
+
+@router.get(
+    "/{machine_id}/history",
+    response_model=List[TelemetryHistoryPoint]
+)
+def get_history(
+    machine_id: str,
+    limit: int = 100
+):
+
+    if not machine_exists(machine_id):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Machine {machine_id} not found"
+        )
+
+    return get_machine_history(machine_id, limit)

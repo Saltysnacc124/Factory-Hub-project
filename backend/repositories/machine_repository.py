@@ -12,30 +12,45 @@ from database.db import SessionLocal
 from database import crud
 
 from datetime import datetime
+from database.models import Telemetry
 
+def get_machine_history(
+    machine_id: str,
+    limit: int = 100
+):
+
+    db = SessionLocal()
+
+    try:
+        return crud.get_telemetry_history(
+            db,
+            machine_id,
+            limit
+        )
+
+    finally:
+        db.close()
 
 def machine_exists(machine_id: str):
-    return machine_id in machine_states
+
+    db = SessionLocal()
+
+    try:
+        return crud.get_machine(db, machine_id) is not None
+
+    finally:
+        db.close()
 
 
 def get_all_machines():
 
-    machines = []
+    db = SessionLocal()
 
-    for machine_id, data in machine_states.items():
+    try:
+        return crud.get_all_machines(db)
 
-        machines.append(
-            MachineResponse(
-                machine_id=machine_id,
-                current_state=data["current_state"],
-                active_alarm=data["active_alarm"],
-                current_tool=data["current_tool"],
-                last_cycle_event=data["last_cycle_event"],
-                last_update=data["last_update"]
-            )
-        )
-
-    return machines
+    finally:
+        db.close()
 
 
 def get_machine_by_id(machine_id: str):
@@ -239,6 +254,7 @@ def save_cycle_event( machine_id: str, timestamp: str, cycle_event: CycleEvent):
             db,
             **cycle_event_data
         )
+        
 
     except Exception:
         db.rollback()
